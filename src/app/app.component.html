@@ -1,0 +1,29 @@
+<tui-root>
+  <tui-select
+    class="b-form"
+    [valueContent]="employeesTemplate"
+    [(ngModel)]="value"
+    (ngModelChange)="onChange($event)"
+    [tuiTextfieldLabelOutside]="true"
+  >
+    Выберите сотрудников
+    <ng-template tuiDataList>
+      <tui-data-list>
+        <tui-opt-group>
+          <button tuiOption [value]="bank">All</button>
+        </tui-opt-group>
+        <tui-opt-group>
+          <tui-opt-group tuiMultiSelectGroup>
+            <button *ngFor="let item of bank" tuiOption [value]="item">
+              {{ item.name }}
+            </button>
+          </tui-opt-group>
+        </tui-opt-group>
+      </tui-data-list>
+    </ng-template>
+  </tui-select>
+
+  <ng-template #employeesTemplate let-employees>
+    {{ employees.length }}
+  </ng-template>
+</tui-root>
