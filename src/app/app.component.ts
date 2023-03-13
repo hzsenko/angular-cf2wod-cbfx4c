@@ -25,8 +25,4 @@ const BANK: readonly Account[] = [
 export class AppComponent {
   value = null;
   readonly bank = BANK;
-
-  onChange(value: readonly Account[]) {
-    this.value = !value.length ? null : value;
-  }
 }
