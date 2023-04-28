@@ -1,28 +1,51 @@
-<tui-root>
-  <tui-select
-    class="b-form"
-    [valueContent]="employeesTemplate"
-    [(ngModel)]="value"
-    [tuiTextfieldLabelOutside]="true"
-  >
-    Выберите сотрудников
-    <ng-template tuiDataList>
-      <tui-data-list>
-        <tui-opt-group>
-          <button tuiOption [value]="bank">All</button>
-        </tui-opt-group>
-        <tui-opt-group>
-          <tui-opt-group tuiMultiSelectGroup>
-            <button *ngFor="let item of bank" tuiOption [value]="item">
-              {{ item.name }}
-            </button>
-          </tui-opt-group>
-        </tui-opt-group>
-      </tui-data-list>
-    </ng-template>
-  </tui-select>
+<ng-container tuiTableFilters>
+  <form class="form tui-space_bottom-4" [formGroup]="form">
+    <tui-input
+      formControlName="term"
+      class="control"
+      [tuiTableFilter]="filterBy"
+      [tuiTextfieldSize]="'m'"
+      [tuiGenericFilter]="filter"
+    >
+      Search by {{ filterBy }}
+    </tui-input>
+    <tui-input
+      *ngIf="additionalFilterBy"
+      formControlName="additionalTerm"
+      class="control"
+      [tuiTableFilter]="additionalFilterBy"
+      [tuiTextfieldSize]="'m'"
+      [tuiGenericFilter]="additionalFilter"
+    >
+      Search by {{ additionalFilterBy }}
+    </tui-input>
+  </form>
 
-  <ng-template #employeesTemplate let-employees>
-    {{ employees.length }}
-  </ng-template>
-</tui-root>
+  <table tuiTable class="table" [columns]="source.columns">
+    <thead>
+      <tr tuiThGroup>
+        <th *ngFor="let column of source.columns" tuiTh>
+          {{ column }}
+        </th>
+      </tr>
+    </thead>
+    <tbody tuiTbody [data]="source.data">
+      <tr *ngFor="let item of source.data | tuiTableFilters | async" tuiTr>
+        <ng-container *ngFor="let column of source.columns">
+          <td *tuiCell="column" tuiTd>
+            <ng-container
+              *ngTemplateOutlet="
+                columnTemplate;
+                context: { $implicit: item, column }
+              "
+            ></ng-container>
+          </td>
+        </ng-container>
+      </tr>
+    </tbody>
+  </table>
+</ng-container>
+
+<ng-template #columnTemplate let-item let-column="column">
+  {{ item[column] }}
+</ng-template>
